@@ -9,11 +9,11 @@ import (
 
 type loggerKey struct{}
 
-// New returns a configured *zap.Logger for the given env.Env.
-// For env.Development it creates a development logger; for env.Production it
-// currently also creates a development logger. The created logger is set as
-// the global logger via zap.ReplaceGlobals and then returned. New will panic
-// if an unsupported env.Env value is provided.
+// New returns a configured *zap.Logger for the provided env.Env.
+// For env.Development it creates a development logger using zap.NewDevelopment.
+// For env.Production it creates a production logger using zap.NewProduction.
+// The created logger is installed as the global logger via zap.ReplaceGlobals and returned.
+// The function panics if an unsupported envType is provided.
 func New(envType env.Env) *zap.Logger {
 	var l *zap.Logger
 
@@ -21,7 +21,7 @@ func New(envType env.Env) *zap.Logger {
 	case env.Development:
 		l = zap.Must(zap.NewDevelopment())
 	case env.Production:
-		l = zap.Must(zap.NewDevelopment())
+		l = zap.Must(zap.NewProduction())
 	default:
 		panic("invalid env")
 	}
